@@ -18,6 +18,7 @@ from pydub import AudioSegment
 
 # Globals:
 data_dir = './ravdess/'
+data_dir = "C:/Users/mattk/Desktop/ravdessF"
 emotions ={
   '01':'neutral',
   '02':'calm',
@@ -31,6 +32,9 @@ emotions ={
 size_read = 0
 observed_emotions=['calm', 'happy', 'fearful', 'disgust']
 skipped_files = []
+
+observed_emotions_key = ['02', '03', '06', '07']
+
 
     # **********************Approach**************************
     # Create function to extract mfcc, chroma, and mel features from files
@@ -107,6 +111,31 @@ def extract_feature(file_name, mfcc, chroma, mel):
             result=np.hstack((result, mel))
     return result
 
+# Given list of predicted emotions and true emotions, determine stats
+# Stats: 
+# % emotion prediction is correct
+def calculate_stats(predicted_data, true_data):
+    # Check same length
+    if len(predicted_data) != len(true_data):
+        return None
+    
+    # Create dict from list of emotions used default the counter to 0
+    emotion_count = dict.fromkeys(observed_emotions_key, 0)
+    # Same for correct counter
+    emotion_correct = dict.fromkeys(observed_emotions_key, 0)
+
+    #Go throug every item in true, add counter to emotion, add counter to emotion_right if correct
+    for i in range(len(true_data)):
+        emotion_count[true_data[i]] += 1
+        if true_data[i] == predicted_data[i]:
+            emotion_correct[true_data[i]] += 1
+
+    # Calculate percentage of correct for each emotion
+    for emotion in emotion_correct.keys():
+        emotion_correct[emotion] = round(emotion_correct[emotion]/emotion_count[emotion]*100, 2)
+
+    return emotion_correct
+
 # Start timer
 start_time = time.time()
 
@@ -137,3 +166,8 @@ time_elapsed = time.strftime('%H:%M:%S', time.gmtime(end_time-start_time))
 
 print('\nRead {:.2f} MB in {:s}'.format(size_read/1048576, time_elapsed))
 print('Skipped {:d} files'.format(len(skipped_files)))
+
+print('Emotion accuracies:\n')
+accuracies = calculate_stats(predicted, ytest)
+for emotion in accuracies.keys():
+    print('{:s} {:4.2f}%'.format(emotions[emotion], accuracies[emotion]))

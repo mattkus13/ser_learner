@@ -4,6 +4,7 @@
 #   Derived from DataFlair's implementation found at:
 #   https://data-flair.training/blogs/python-mini-project-speech-emotion-recognition/
 
+import argparse
 from genericpath import isdir
 import time
 import librosa
@@ -30,11 +31,9 @@ emotions ={
   '08':'surprised'
 } 
 size_read = 0
-observed_emotions=['calm', 'happy', 'fearful', 'disgust']
+observed_emotions=list(emotions.values())
+observed_emotions_key = list(emotions.keys())
 skipped_files = []
-
-observed_emotions_key = ['02', '03', '06', '07']
-
 
     # **********************Approach**************************
     # Create function to extract mfcc, chroma, and mel features from files
@@ -136,16 +135,41 @@ def calculate_stats(predicted_data, true_data):
 
     return emotion_correct
 
+##################################################################################################################
 # Start timer
 start_time = time.time()
 
+# Create the parser
+parser = argparse.ArgumentParser()
+# Add an argument
+parser.add_argument('-p', type=str, required=False)
+parser.add_argument('-e', nargs='+', required=False, help='specify emotions. Valid emotions are: \nneutral, calm, happy, sad, angry, fearful, disgust, surprised')
+# Parse the argument
+args = parser.parse_args()
+
 # If path specified
-if len(sys.argv) > 1:
-    if os.path.isdir(sys.argv[1]):
-        data_dir = sys.argv[1]
+if args.p:
+    if os.path.isdir(args.p):
+        data_dir = args.p
     else:
         print('%s is invalid directory' % sys.argv[1])
         sys.exit()
+
+# If emotions specified, validate and make observed only those specified
+# Else defaults
+if args.e:
+    for item in args.e:
+        if item not in emotions.values():
+            print('invalid emotion %s'% item)
+            sys.exit()
+    for item in observed_emotions:
+        if item not in args.e:
+            observed_emotions.remove(item)
+else:
+    observed_emotions=['calm', 'happy', 'fearful', 'disgust']
+# Filter the observed emotions key list
+observed_emotions_key = [x for x in observed_emotions_key if emotions[x] in observed_emotions]
+
 
 x,y = load_data()
 data = train_test_split(x, y, test_size=.25)

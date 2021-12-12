@@ -118,4 +118,3 @@ dmypy.json
 .idea/misc.xml
 .idea/emotionrecognizer.iml
 .idea/
-*.wav

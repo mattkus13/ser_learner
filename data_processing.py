@@ -150,6 +150,7 @@ def args_handler():
     parser.add_argument('-p', type=str, required=False)
     parser.add_argument('-e', nargs='+', required=False, help='specify emotions. Valid emotions are: \nneutral, calm, happy, sad, angry, fearful, disgust, surprised')
     parser.add_argument('-v', action='store_true', help='include for higher verbosity')
+    parser.add_argument('-P', type = str)
 
     global args
     args = parser.parse_args()
@@ -215,3 +216,9 @@ print('\nEmotion accuracies:\n')
 accuracies = calculate_stats(predicted, ytest)
 for emotion in accuracies.keys():
     print('{:s} {:4.2f}%'.format(emotions[emotion], accuracies[emotion]))
+
+if args.P:
+    print('Predicting audio file at %s' %args.P)
+    data_dir = args.P
+    x,y = load_data()
+    print(model.predict(x))

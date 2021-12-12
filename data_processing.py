@@ -19,7 +19,7 @@ from pydub import AudioSegment
 
 # Globals:
 data_dir = './ravdess/'
-data_dir = "C:/Users/mattk/Desktop/ravdessF"
+data_dir = ".\\ravdessF"
 emotions ={
   '01':'neutral',
   '02':'calm',
@@ -34,6 +34,7 @@ size_read = 0
 observed_emotions=list(emotions.values())
 observed_emotions_key = list(emotions.keys())
 skipped_files = []
+args = None
 
     # **********************Approach**************************
     # Create function to extract mfcc, chroma, and mel features from files
@@ -58,12 +59,19 @@ skipped_files = []
 def load_data():
     x = []
     y = []
+    actor = None
     full_dir = data_dir + '/Actor_*/*.wav'
     for filename in glob.glob(full_dir):
-        print('Loading file:  %s' % filename)
+        # Update actor for output
+        cur_actor = filename.split('Actor')[1][1:3]
+        if cur_actor != actor:
+            actor = cur_actor
+            print('Reading Actor_%s files'%actor)
+
+        if args.v: print('Loading file:  %s' % filename)
 
         size = os.path.getsize(filename)
-        print('Size: %.2f' % size)
+        if args.v: print('Size: %.2f' % size)
         global size_read
         size_read += size
 
@@ -135,41 +143,53 @@ def calculate_stats(predicted_data, true_data):
 
     return emotion_correct
 
+
+# Handle args
+def args_handler():
+    # Add an argument
+    parser.add_argument('-p', type=str, required=False)
+    parser.add_argument('-e', nargs='+', required=False, help='specify emotions. Valid emotions are: \nneutral, calm, happy, sad, angry, fearful, disgust, surprised')
+    parser.add_argument('-v', action='store_true', help='include for higher verbosity')
+
+    global args
+    args = parser.parse_args()
+
+    # If path specified
+    if args.p:
+        if os.path.isdir(args.p):
+            data_dir = args.p
+        else:
+            print('%s is invalid directory' % sys.argv[1])
+            sys.exit()
+
+    # If emotions specified, validate and make observed only those specified
+    # Else defaults
+    global observed_emotions
+    global observed_emotions_key
+    if args.e:
+        if (len(args.e) == 1) and (args.e[0] == 'a'):
+            pass
+        else:
+            for item in args.e:
+                if item not in emotions.values():
+                    print('invalid emotion %s'% item)
+                    sys.exit()
+            for item in observed_emotions:
+                if item not in args.e:
+                    observed_emotions.remove(item)
+    else:
+        observed_emotions=['calm', 'happy', 'fearful', 'disgust']
+    # Filter the observed emotions key list
+    observed_emotions_key = [x for x in observed_emotions_key if emotions[x] in observed_emotions]
+
+
 ##################################################################################################################
+parser = argparse.ArgumentParser()
+args_handler()
+
+
 # Start timer
 start_time = time.time()
-
-# Create the parser
-parser = argparse.ArgumentParser()
-# Add an argument
-parser.add_argument('-p', type=str, required=False)
-parser.add_argument('-e', nargs='+', required=False, help='specify emotions. Valid emotions are: \nneutral, calm, happy, sad, angry, fearful, disgust, surprised')
-# Parse the argument
-args = parser.parse_args()
-
-# If path specified
-if args.p:
-    if os.path.isdir(args.p):
-        data_dir = args.p
-    else:
-        print('%s is invalid directory' % sys.argv[1])
-        sys.exit()
-
-# If emotions specified, validate and make observed only those specified
-# Else defaults
-if args.e:
-    for item in args.e:
-        if item not in emotions.values():
-            print('invalid emotion %s'% item)
-            sys.exit()
-    for item in observed_emotions:
-        if item not in args.e:
-            observed_emotions.remove(item)
-else:
-    observed_emotions=['calm', 'happy', 'fearful', 'disgust']
-# Filter the observed emotions key list
-observed_emotions_key = [x for x in observed_emotions_key if emotions[x] in observed_emotions]
-
 
 x,y = load_data()
 data = train_test_split(x, y, test_size=.25)
@@ -189,9 +209,9 @@ end_time = time.time()
 time_elapsed = time.strftime('%H:%M:%S', time.gmtime(end_time-start_time))
 
 print('\nRead {:.2f} MB in {:s}'.format(size_read/1048576, time_elapsed))
-print('Skipped {:d} files'.format(len(skipped_files)))
+if args.v: print('Skipped {:d} files'.format(len(skipped_files)))
 
-print('Emotion accuracies:\n')
+print('\nEmotion accuracies:\n')
 accuracies = calculate_stats(predicted, ytest)
 for emotion in accuracies.keys():
     print('{:s} {:4.2f}%'.format(emotions[emotion], accuracies[emotion]))

@@ -1,0 +1,144 @@
+Learning rate: adaptive
+alpha: 0.0001
+Accuracy: 49.03%
+neutral 0.00%
+calm 31.48%
+happy 64.10%
+sad 52.08%
+angry 78.18%
+fearful 73.91%
+disgust 40.43%
+surprised 34.21%
+*****************************
+Learning rate: adaptive
+alpha: 0.001
+Accuracy: 48.75%
+neutral 0.00%
+calm 85.42%
+happy 17.86%
+sad 42.55%
+angry 44.19%
+fearful 34.88%
+disgust 69.39%
+surprised 76.60%
+*****************************
+Learning rate: adaptive
+alpha: 0.01
+Accuracy: 41.50%
+neutral 18.18%
+calm 37.50%
+happy 73.17%
+sad 66.04%
+angry 46.43%
+fearful 33.33%
+disgust 47.92%
+surprised 0.00%
+*****************************
+Learning rate: adaptive
+alpha: 0.1
+Accuracy: 45.13%
+neutral 3.45%
+calm 36.73%
+happy 29.79%
+sad 34.15%
+angry 70.18%
+fearful 42.11%
+disgust 86.36%
+surprised 38.89%
+*****************************
+Learning rate: constant
+alpha: 0.0001
+Accuracy: 53.76%
+neutral 50.00%
+calm 69.09%
+happy 38.64%
+sad 27.66%
+angry 69.05%
+fearful 46.81%
+disgust 60.00%
+surprised 64.00%
+*****************************
+Learning rate: constant
+alpha: 0.001
+Accuracy: 48.47%
+neutral 0.00%
+calm 43.90%
+happy 63.83%
+sad 58.82%
+angry 63.83%
+fearful 38.18%
+disgust 68.09%
+surprised 29.55%
+*****************************
+Learning rate: constant
+alpha: 0.01
+Accuracy: 39.83%
+neutral 7.14%
+calm 24.59%
+happy 33.96%
+sad 75.00%
+angry 75.00%
+fearful 57.89%
+disgust 13.04%
+surprised 34.69%
+*****************************
+Learning rate: constant
+alpha: 0.1
+Accuracy: 43.18%
+neutral 50.00%
+calm 25.00%
+happy 49.06%
+sad 28.26%
+angry 57.14%
+fearful 76.09%
+disgust 19.51%
+surprised 40.00%
+*****************************
+Learning rate: invscaling
+alpha: 0.0001
+Accuracy: 49.86%
+neutral 0.00%
+calm 61.70%
+happy 61.36%
+sad 46.34%
+angry 37.25%
+fearful 67.31%
+disgust 60.78%
+surprised 34.55%
+*****************************
+Learning rate: invscaling
+alpha: 0.001
+Accuracy: 46.24%
+neutral 5.88%
+calm 4.44%
+happy 61.82%
+sad 68.00%
+angry 51.02%
+fearful 50.00%
+disgust 41.82%
+surprised 56.25%
+*****************************
+Learning rate: invscaling
+alpha: 0.01
+Accuracy: 49.86%
+neutral 26.32%
+calm 61.70%
+happy 82.50%
+sad 19.57%
+angry 61.11%
+fearful 50.00%
+disgust 60.78%
+surprised 28.57%
+*****************************
+Learning rate: invscaling
+alpha: 0.1
+Accuracy: 52.92%
+neutral 42.31%
+calm 52.08%
+happy 23.53%
+sad 61.22%
+angry 63.64%
+fearful 72.55%
+disgust 34.04%
+surprised 57.14%
+*****************************
